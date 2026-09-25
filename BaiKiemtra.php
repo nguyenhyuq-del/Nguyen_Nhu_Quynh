@@ -1,0 +1,65 @@
+<?php
+// Kết nối CSDL baikiemtra
+$pdo = new PDO("mysql:host=localhost;dbname=baikiemtra;charset=utf8mb4", "root", "");
+$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+// ==========================================
+// BÀI 1
+// ==========================================
+function isPrime($n) {
+    if ($n < 2) return false;
+    for ($i = 2; $i <= sqrt($n); $i++) {
+        if ($n % $i == 0) return false;
+    }
+    return true;
+}
+
+echo "<h3>Bài 1:</h3>";
+echo "Danh sách các số nguyên tố từ 1 đến 100: <br>";
+for ($i = 1; $i <= 100; $i++) {
+    if (isPrime($i)) {
+        echo $i . " ";
+    }
+}
+echo "<br><br>";
+
+// ==========================================
+// BÀI 2
+// ==========================================
+// Tạo bảng và lưu mảng sản phẩm vào CSDL (nếu chưa có)
+$pdo->exec("CREATE TABLE IF NOT EXISTS SanPham (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(150),
+    price DECIMAL(15,2),
+    quantity INT
+)");
+
+// Mảng kết hợp chứa nhiều thông tin sản phẩm
+$products = [
+    ['name' => 'Laptop Dell', 'price' => 25000000, 'quantity' => 5],
+    ['name' => 'Điện thoại iPhone 15', 'price' => 22000000, 'quantity' => 12],
+    ['name' => 'Tai nghe Sony', 'price' => 8400000, 'quantity' => 8],
+    ['name' => 'Bàn phím cơ ', 'price' => 1950000, 'quantity' => 15],
+    ['name' => 'Chuột Logitech', 'price' => 2450000, 'quantity' => 20],
+    ['name' => 'Màn hình LG 27 inch', 'price' => 6800000, 'quantity' => 7],
+    ['name' => 'Đồng hồ Apple Watch Series 9', 'price' => 10500000, 'quantity' => 10],
+    ['name' => 'Loa Bluetooth JBL', 'price' => 3600000, 'quantity' => 18]
+];
+
+// Hàm tính tổng giá trị tất cả sản phẩm
+function getTotalValue($productList) {
+    $total = 0;
+    foreach ($productList as $item) {
+        $total += $item['price'] * $item['quantity'];
+    }
+    return $total;
+}
+
+echo "<h3>Bài 2:</h3>";
+echo "<strong>Thông tin tất cả sản phẩm:</strong><br>";
+foreach ($products as $item) {
+    echo "Tên: " . $item['name'] . " | Giá: " . number_format($item['price']) . " VNĐ | Số lượng: " . $item['quantity'] . "<br>";
+}
+
+echo "<br><strong>Tổng giá trị của tất cả sản phẩm:</strong> " . number_format(getTotalValue($products)) . " VNĐ";
+?>
